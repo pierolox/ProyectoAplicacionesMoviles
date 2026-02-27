@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class UsuarioDAO {
     private Connection conn = null;
@@ -76,6 +78,102 @@ public class UsuarioDAO {
     }
     
     public void delete(int id){
+        try {
+            conn = ConexionDB.MySQL8();
+            conn.setAutoCommit(false);
+            
+            String SQL = "DELETE FROM usuarios WHERE id = ?";
+            ps = conn.prepareStatement(SQL);
+            
+            ps.setInt(1, id);
+            
+            int rows = ps.executeUpdate();
+            
+            if (rows != 1) {
+                conn.rollback();
+                throw new SQLException("error al eliminar");
+            } else {
+                conn.commit();
+                System.out.println("se borraron los datos");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {conn.close();} catch (Exception e) {}
+            try {ps.close();} catch (Exception e) {}
+        }
+    }
+    
+    public Usuario findById(int id){
+        Usuario usuario = null;
         
+        try {
+            conn = ConexionDB.MySQL8();
+            conn.setAutoCommit(false);
+            
+            String SQL = "SELECT * FROM usuarios WHERE id = ?";
+            ps = conn.prepareStatement(SQL);
+            
+            ps.setInt(1, id);
+            
+            rs=ps.executeQuery();
+            
+            if (!rs.next()) {
+                conn.rollback();
+                throw new SQLException("error al buscar datos por ID");
+            } else {
+                conn.commit();
+                
+                usuario = new Usuario();
+                
+                usuario.setId(rs.getInt("id"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setContrasena(rs.getString("contrasena"));
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {conn.close();} catch (Exception e) {}
+            try {ps.close();} catch (Exception e) {}
+            try {rs.close();} catch (Exception e) {}
+        }
+        
+        return usuario;
+    }
+    
+    public Collection<Usuario> findAll(){
+        Collection<Usuario> list = new ArrayList<>();
+        
+        try {
+            conn=ConexionDB.MySQL8();
+            
+            String SQL = "SELECT * FROM usuarios ORDER BY id";
+            ps=conn.prepareStatement(SQL);
+            
+            rs=ps.executeQuery();
+            
+            while (rs.next()) {                
+                Usuario usuario = new Usuario();
+                
+                usuario.setId(rs.getInt("id"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setContrasena(rs.getString("contrasena"));
+                
+                list.add(usuario);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {conn.close();} catch (Exception e) {}
+            try {ps.close();} catch (Exception e) {}
+            try {rs.close();} catch (Exception e) {}
+        }
+        
+        return list;
     }
 }
