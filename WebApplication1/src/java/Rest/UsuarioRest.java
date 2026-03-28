@@ -22,6 +22,20 @@ public class UsuarioRest {
     public UsuarioRest() {
     }
     
+    @Path("/login")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(Usuario usuario) {
+        Usuario user = dao.login(usuario.getCorreo(), usuario.getContrasena());
+
+        if (user != null) {
+            return Response.status(Response.Status.OK).entity(user).build();
+        }
+
+        return Response.status(Response.Status.UNAUTHORIZED).entity("{\"mensaje\":\"Credenciales incorrectas\"}").build();
+    }
+    
     @Path("/listar")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,7 +61,7 @@ public class UsuarioRest {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registrar_POST(Usuario usuario){
         dao.insert(usuario);
-        return Response.status(Response.Status.OK).entity("usuario registrado").build();
+        return Response.status(Response.Status.OK).entity("{\"mensaje\":\"usuario registrado\"}").build();
     }
     
     @Path("/editar/{id}")
@@ -60,7 +74,7 @@ public class UsuarioRest {
             usuario.setId(id);
             dao.update(usuario);
             
-            return Response.status(Response.Status.OK).entity("usuario actualizado").build();
+            return Response.status(Response.Status.OK).entity("{\\\"mensaje\\\":\\\"usuario actualizado\\\"}").build();
         }
         throw new WebApplicationException(404);
     }
@@ -73,8 +87,9 @@ public class UsuarioRest {
         
         if (usuarioDb != null){
             dao.delete(id);
-            return Response.status(Response.Status.OK).entity("usuario eliminado").build();
+            return Response.status(Response.Status.OK).entity("{\\\"mensaje\\\":\\\"usuario eliminado\\\"}").build();
         }
         throw new WebApplicationException(404);
     }
 }
+

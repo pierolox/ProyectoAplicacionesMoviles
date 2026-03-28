@@ -42,8 +42,8 @@ public class UsuarioDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {conn.close();} catch (Exception e) {}
-            try {ps.close();} catch (Exception e) {}
+            try {if (ps != null) ps.close();} catch (Exception e) {}
+            try {if (conn != null) conn.close();} catch (Exception e) {}
         }
     }
     
@@ -58,6 +58,7 @@ public class UsuarioDAO {
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getCorreo());
             ps.setString(3, usuario.getContrasena());
+            ps.setInt(4, usuario.getId());
             
             int rows = ps.executeUpdate();
             
@@ -72,8 +73,8 @@ public class UsuarioDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {conn.close();} catch (Exception e) {}
-            try {ps.close();} catch (Exception e) {}
+            try {if (ps != null) ps.close();} catch (Exception e) {}
+            try {if (conn != null) conn.close();} catch (Exception e) {}
         }
     }
     
@@ -100,8 +101,8 @@ public class UsuarioDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {conn.close();} catch (Exception e) {}
-            try {ps.close();} catch (Exception e) {}
+            try {if (ps != null) ps.close();} catch (Exception e) {}
+            try {if (conn != null) conn.close();} catch (Exception e) {}
         }
     }
     
@@ -110,7 +111,6 @@ public class UsuarioDAO {
         
         try {
             conn = ConexionDB.MySQL8();
-            conn.setAutoCommit(false);
             
             String SQL = "SELECT * FROM usuarios WHERE id = ?";
             ps = conn.prepareStatement(SQL);
@@ -120,10 +120,8 @@ public class UsuarioDAO {
             rs=ps.executeQuery();
             
             if (!rs.next()) {
-                conn.rollback();
                 throw new SQLException("error al buscar datos por ID");
             } else {
-                conn.commit();
                 
                 usuario = new Usuario();
                 
@@ -136,9 +134,9 @@ public class UsuarioDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {conn.close();} catch (Exception e) {}
-            try {ps.close();} catch (Exception e) {}
-            try {rs.close();} catch (Exception e) {}
+            try {if (rs != null) rs.close();} catch (Exception e) {}
+            try {if (ps != null) ps.close();} catch (Exception e) {}
+            try {if (conn != null) conn.close();} catch (Exception e) {}
         }
         
         return usuario;
@@ -169,11 +167,44 @@ public class UsuarioDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {conn.close();} catch (Exception e) {}
-            try {ps.close();} catch (Exception e) {}
-            try {rs.close();} catch (Exception e) {}
+            try {if (rs != null) rs.close();} catch (Exception e) {}
+            try {if (ps != null) ps.close();} catch (Exception e) {}
+            try {if (conn != null) conn.close();} catch (Exception e) {}
         }
     
         return list;
+    }
+    
+    public Usuario login(String correo, String contrasena) {
+        Usuario usuario = null;
+
+        try {
+            conn = ConexionDB.MySQL8();
+
+            String SQL = "SELECT * FROM usuarios WHERE correo = ? AND contrasena = ?";
+            ps = conn.prepareStatement(SQL);
+
+            ps.setString(1, correo);
+            ps.setString(2, contrasena);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                usuario = new Usuario();
+                usuario.setId(rs.getInt("id"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setContrasena(rs.getString("contrasena"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {if (rs != null) rs.close();} catch (Exception e) {}
+            try {if (ps != null) ps.close();} catch (Exception e) {}
+            try {if (conn != null) conn.close();} catch (Exception e) {}
+        }
+
+        return usuario;
     }
 }
