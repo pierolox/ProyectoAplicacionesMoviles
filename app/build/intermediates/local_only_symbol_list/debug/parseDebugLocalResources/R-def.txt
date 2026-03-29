@@ -1,0 +1,33 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color error
+color info
+color success
+color warning
+color white
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+drawable outline_account_circle_24
+drawable outline_admin_panel_settings_24
+drawable outline_arrow_circle_right_24
+drawable outline_asterisk_24
+id btnRegistrar
+id btnRegistro
+id etCorreo
+id etNombre
+id etPassword
+id guideline
+id guideline2
+id main
+id tvRegistro
+layout activity_home
+layout activity_main
+layout activity_registro
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Base.Theme.AndroidRest
+style Theme.AndroidRest
+xml backup_rules
+xml data_extraction_rules
