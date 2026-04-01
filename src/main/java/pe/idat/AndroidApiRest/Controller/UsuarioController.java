@@ -34,4 +34,9 @@ public class UsuarioController {
     public void deleteUsuario(@PathVariable Long id) {
         usuarioService.deleteUsuario(id);
     }
+
+    @PostMapping("/login")
+    public Usuario login(@RequestBody Usuario usuario) {
+        return usuarioService.login(usuario.getCorreo(), usuario.getContrasena());
+    }
 }
