@@ -9,23 +9,32 @@ CREATE TABLE usuarios (
 );
 
 CREATE TABLE categoria (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100),
-    usuario_id INT,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    usuario_id BIGINT,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
 CREATE TABLE habito (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100),
-    categoria_id INT,
-    usuario_id INT,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    categoria_id BIGINT,
+    usuario_id BIGINT,
     FOREIGN KEY (categoria_id) REFERENCES categoria(id),
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE notas (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL,
+    contenido TEXT NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    usuario_id BIGINT,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
 INSERT INTO usuarios (nombre, correo, contrasena)
-VALUES 
+VALUES
 ('Juan Pérez', 'juan@example.com', '123456'),
 ('María López', 'maria@example.com', 'abcdef'),
 ('Carlos Gómez', 'carlos@example.com', 'qwerty');
