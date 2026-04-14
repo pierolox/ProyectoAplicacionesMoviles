@@ -22,4 +22,9 @@ public class Nota {
 
     @Column(name = "usuario_id")
     private Long usuarioId;
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaCreacion = LocalDateTime.now();
+    }
 }
